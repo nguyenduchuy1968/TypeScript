@@ -4,7 +4,7 @@ interface ITodo {
 }
 
 class NoteBook {
-    private _todos!: ITodo[];
+    private _todos: ITodo[] = [];
 
     constructor(private name: string) {
         this._initMain()
@@ -16,8 +16,8 @@ class NoteBook {
     }
 
     private _setTodosToLS(): void {
-        localStorage.setItem(this.name, JSON.stringify(this._todos))
-        this._initTodos()
+        localStorage.setItem(this.name, JSON.stringify(this._todos));
+        // this._initTodos();
     }
 
     private _initMain(): void {
@@ -34,7 +34,7 @@ class NoteBook {
         todosDiv.innerHTML = '';
 
         this._todos.forEach(todo => {
-            // Creating div which wraps 2 other divs (todoDiv and deleteBtn) inside
+            // Creating wrapperDiv which wraps 2 other divs (todoDiv and deleteBtn) inside
             const wrapperDiv = document.createElement('div') as HTMLDivElement;
             const todoDiv = document.createElement('div');
             const deleteBtn = document.createElement('button') as HTMLButtonElement;
@@ -49,10 +49,11 @@ class NoteBook {
             todoDiv.style.display = 'inline-block';
             todoDiv.innerText = `${todo.id}) ${todo.title}`;
 
-            ////add to the wrapperDiv id = 'w${todo.id.toString()}'
+            //add to the wrapperDiv id = `w${todo.id.toString()}`
             wrapperDiv.style.paddingBottom = '10px';
             wrapperDiv.append(todoDiv, deleteBtn);
             wrapperDiv.id = `w${todo.id.toString()}`;
+
             todosDiv.appendChild(wrapperDiv);
         })
     }
@@ -81,11 +82,11 @@ class NoteBook {
         this._todos.forEach(todo => {
             const delBtn = document.getElementById(`${todo.id}`) as HTMLButtonElement;
             delBtn.onclick = function () {
-                // deleting element of tempArr (object) with index = indexOf(todo)
+                // deleting element (object) of tempArr  with index = indexOf(todo)
                 tempArr.splice(tempArr.indexOf(todo), 1);
                 // set new change to localStorage
                 localStorage.setItem(keyName, JSON.stringify(tempArr));
-                // findout wrapperDiv with id = 'w${todo.id.toString()}'
+                // find out wrapperDiv with id = 'w${todo.id.toString()}'
                 const wrap = document.getElementById(`w${todo.id.toString()}`) as HTMLDivElement;
                 //remove wrapperDiv
                 wrap.remove();

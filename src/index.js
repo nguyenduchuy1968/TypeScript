@@ -1,6 +1,7 @@
 var NoteBook = /** @class */ (function () {
     function NoteBook(name) {
         this.name = name;
+        this._todos = [];
         this._initMain();
     }
     NoteBook.prototype._getTodosFromLS = function () {
@@ -9,7 +10,7 @@ var NoteBook = /** @class */ (function () {
     };
     NoteBook.prototype._setTodosToLS = function () {
         localStorage.setItem(this.name, JSON.stringify(this._todos));
-        this._initTodos();
+        // this._initTodos();
     };
     NoteBook.prototype._initMain = function () {
         this._initForm();
@@ -22,7 +23,7 @@ var NoteBook = /** @class */ (function () {
         var todosDiv = document.querySelector('#todos');
         todosDiv.innerHTML = '';
         this._todos.forEach(function (todo) {
-            // Creating div which wraps 2 other divs (todoDiv and deleteBtn) inside
+            // Creating wrapperDiv which wraps 2 other divs (todoDiv and deleteBtn) inside
             var wrapperDiv = document.createElement('div');
             var todoDiv = document.createElement('div');
             var deleteBtn = document.createElement('button');
@@ -34,7 +35,7 @@ var NoteBook = /** @class */ (function () {
             //todoDiv button
             todoDiv.style.display = 'inline-block';
             todoDiv.innerText = "".concat(todo.id, ") ").concat(todo.title);
-            ////add to the wrapperDiv id = 'w${todo.id.toString()}'
+            //add to the wrapperDiv id = `w${todo.id.toString()}`
             wrapperDiv.style.paddingBottom = '10px';
             wrapperDiv.append(todoDiv, deleteBtn);
             wrapperDiv.id = "w".concat(todo.id.toString());
@@ -66,11 +67,11 @@ var NoteBook = /** @class */ (function () {
         this._todos.forEach(function (todo) {
             var delBtn = document.getElementById("".concat(todo.id));
             delBtn.onclick = function () {
-                // deleting element of tempArr (object) with index = indexOf(todo)
+                // deleting element (object) of tempArr  with index = indexOf(todo)
                 tempArr.splice(tempArr.indexOf(todo), 1);
                 // set new change to localStorage
                 localStorage.setItem(keyName, JSON.stringify(tempArr));
-                // findout wrapperDiv with id = 'w${todo.id.toString()}'
+                // find out wrapperDiv with id = 'w${todo.id.toString()}'
                 var wrap = document.getElementById("w".concat(todo.id.toString()));
                 //remove wrapperDiv
                 wrap.remove();

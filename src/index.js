@@ -66,14 +66,14 @@ var NoteBook = /** @class */ (function () {
         this._todos.forEach(function (todo) {
             var delBtn = document.getElementById("".concat(todo.id));
             delBtn.onclick = function () {
-                // deleting element of tempArr (o)bject) with index = indexOf(todo)
+                // deleting element of tempArr (object) with index = indexOf(todo)
                 tempArr.splice(tempArr.indexOf(todo), 1);
+                // set new change to localStorage
+                localStorage.setItem(keyName, JSON.stringify(tempArr));
                 // findout wrapperDiv with id = 'w${todo.id.toString()}'
                 var wrap = document.getElementById("w".concat(todo.id.toString()));
                 //remove wrapperDiv
                 wrap.remove();
-                // set new change to localStorage
-                localStorage.setItem(keyName, JSON.stringify(tempArr));
             };
         });
     };

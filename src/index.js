@@ -62,15 +62,14 @@ var NoteBook = /** @class */ (function () {
     // set new avaliable keyName = this.name for saving newchange into  localStorage
     NoteBook.prototype._deleteTodo = function () {
         this._getTodosFromLS();
-        var tempArr = this._todos;
         var keyName = this.name;
-        this._todos.forEach(function (todo) {
+        this._todos.forEach(function (todo, _index, arr) {
             var delBtn = document.getElementById("".concat(todo.id));
             delBtn.onclick = function () {
                 // deleting element (object) of tempArr  with index = indexOf(todo)
-                tempArr.splice(tempArr.indexOf(todo), 1);
+                arr.splice(arr.indexOf(todo), 1);
                 // set new change to localStorage
-                localStorage.setItem(keyName, JSON.stringify(tempArr));
+                localStorage.setItem(keyName, JSON.stringify(arr));
                 // find out wrapperDiv with id = 'w${todo.id.toString()}'
                 var wrap = document.getElementById("w".concat(todo.id.toString()));
                 //remove wrapperDiv

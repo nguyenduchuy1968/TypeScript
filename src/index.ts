@@ -21,15 +21,16 @@ class renderCar {
     static run() {
         this._initForm();
         this._carsShow();
+        this._carsFilter(); //method for searching the car(s) by specific condition
     };
 
     private static async _carsShow(): Promise<void> {
         const cars = await carService.getAll();
         const carsDiv = document.querySelector('#carsDiv') as HTMLDivElement;
-       carsDiv.innerText = '';
+        carsDiv.innerText = '';
 
         const url = new URL(location.href);
-        console.log(url);
+
         cars.forEach(car => {
             const {id, brand, price, year} = car;
             const carItem = document.createElement('div') as HTMLDivElement;
@@ -47,12 +48,14 @@ class renderCar {
 
             //add a button "car's info" to car's list
             const carInfoBtn = document.createElement('button') as HTMLButtonElement;
+            const chooseCarsDiv = document.getElementById('chooseCarsDiv') as HTMLDivElement;
             carInfoBtn.innerText = "car's info";
 
             //Show only car's information when onclick event is called
-            carInfoBtn.onclick = async (): Promise<void> => {
+            carInfoBtn.onclick = (): void => {
                 carsDiv.innerText = '';
-                carItem.innerText = `${id} ${brand} -- ${year} -- ${price}`;
+                carItem.innerText = `id: ${id},   model:${brand},   made at: ${year},   price: ${price}   .`;
+                chooseCarsDiv.style.display = 'none';
 
                 // add a button '<< Home >>' to return back
                 const prevLink = document.createElement('a');
@@ -62,6 +65,7 @@ class renderCar {
                 carItem.appendChild(prevLink)
                 carsDiv.append(carItem);
             }
+
             carItem.append(btn, carInfoBtn);
             carsDiv.append(carItem);
         })
@@ -79,6 +83,46 @@ class renderCar {
             await this._carsShow();
             form.reset();
 
+        }
+    }
+
+    // Filter for car(s) if at least 1 condition for searching is true
+    private static async _carsFilter(): Promise<void> {
+        const cars = await carService.getAll();
+
+        const carsFilterDiv = document.getElementById('carsFilterDiv') as HTMLDivElement;
+        const notCarFoundDiv = document.getElementById('notCarFoundDiv') as HTMLDivElement;
+
+        const carFilterForm = document.forms.namedItem('carFilter') as HTMLFormElement;
+        const filterBtn = document.getElementById('filterBtn')as HTMLButtonElement;
+        const brandInput = carFilterForm.choose_brand as HTMLInputElement;
+        const priceInput = carFilterForm.choose_price as HTMLInputElement;
+        const yearInput = carFilterForm.choose_year as HTMLInputElement;
+
+        filterBtn.onclick = (e) => {
+            e.preventDefault();
+            carsFilterDiv.innerText = '';
+            notCarFoundDiv.innerText = '';
+
+            //if at least 1 condition is true , seaching gives a positive result
+            // @ts-ignore
+            let carsFilter = cars.filter((car): ICar =>  {
+                const {id, brand, price, year} = car;
+                if (car.brand.toLowerCase() === brandInput.value.toLowerCase() ||
+                    car.price === +priceInput.value || car.year === +yearInput.value
+                ) {
+                    const carItemDiv = document.createElement('div');
+                    carItemDiv.innerText = `id: ${id},   model:${brand},   made at: ${year},   price: ${price}`;
+                    carsFilterDiv.append(carItemDiv);
+                    return car;
+                }
+
+            });
+            // if nothing is found (array carsFilter is empty) the below message will be appeared
+            if (!carsFilter.length) {
+                notCarFoundDiv.innerText = "Nothing found or incorrect searching conditions !"
+            }
+            carFilterForm.reset();
         }
     }
 }

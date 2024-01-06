@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        body {
+            overflow: scroll; /* Show scrollbars */
+        }
+    </style>
 </head>
 <body>
 <h1>Car's List</h1>
@@ -10,14 +15,26 @@
     <label><input type="text" placeholder="brand" name="brand"></label>
     <label><input type="text" placeholder="year" name="year"></label>
     <label><input type="text" placeholder="price" name="price"></label>
-    <button>save</button>
+    <button>Save</button>
 </form>
-
 <hr>
+<div id="carsDiv"></div>
+<hr>
+<div id="chooseCarsDiv">
+    <h2>Choose cars</h2>
+    <p>(Searching gives the positive result if at least one condition is true) </p>
+    <form name="carFilter">
+        <label><input type="text" placeholder="choose brand..." name="choose_brand"></label>
+        <label><input type="number" placeholder="choose year..." name="choose_year"></label>
+        <label><input type="number" placeholder="choose price..." name="choose_price"></label>
 
-<div id="carsDiv">
-
+        <button id="filterBtn">Choose</button>
+    </form>
+    <div id="carsFilterDiv"></div>
+    <div id="notCarFoundDiv" ></div>
 </div>
+
+
 <script src="index.js"></script>
 </body>
 </html>

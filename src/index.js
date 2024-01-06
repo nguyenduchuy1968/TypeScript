@@ -51,6 +51,7 @@ var renderCar = /** @class */ (function () {
     renderCar.run = function () {
         this._initForm();
         this._carsShow();
+        this._carsFilter(); //method for searching the car(s) by specific condition
     };
     ;
     renderCar._carsShow = function () {
@@ -65,7 +66,6 @@ var renderCar = /** @class */ (function () {
                         carsDiv = document.querySelector('#carsDiv');
                         carsDiv.innerText = '';
                         url = new URL(location.href);
-                        console.log(url);
                         cars.forEach(function (car) {
                             var id = car.id, brand = car.brand, price = car.price, year = car.year;
                             var carItem = document.createElement('div');
@@ -86,22 +86,21 @@ var renderCar = /** @class */ (function () {
                             //------- Show individual car's information -----
                             //add a button "car's info" to car's list
                             var carInfoBtn = document.createElement('button');
+                            var chooseCarsDiv = document.getElementById('chooseCarsDiv');
                             carInfoBtn.innerText = "car's info";
                             //Show only car's information when onclick event is called
-                            carInfoBtn.onclick = function () { return __awaiter(_this, void 0, void 0, function () {
-                                var prevLink;
-                                return __generator(this, function (_a) {
-                                    carsDiv.innerText = '';
-                                    carItem.innerText = "".concat(id, " ").concat(brand, " -- ").concat(year, " -- ").concat(price);
-                                    prevLink = document.createElement('a');
-                                    // @ts-ignore
-                                    prevLink.href = url;
-                                    prevLink.innerText = '<< Home >>';
-                                    carItem.appendChild(prevLink);
-                                    carsDiv.append(carItem);
-                                    return [2 /*return*/];
-                                });
-                            }); };
+                            carInfoBtn.onclick = function () {
+                                carsDiv.innerText = '';
+                                carItem.innerText = "id: ".concat(id, ",   model:").concat(brand, ",   made at: ").concat(year, ",   price: ").concat(price, "   .");
+                                chooseCarsDiv.style.display = 'none';
+                                // add a button '<< Home >>' to return back
+                                var prevLink = document.createElement('a');
+                                // @ts-ignore
+                                prevLink.href = url;
+                                prevLink.innerText = '<< Home >>';
+                                carItem.appendChild(prevLink);
+                                carsDiv.append(carItem);
+                            };
                             carItem.append(btn, carInfoBtn);
                             carsDiv.append(carItem);
                         });
@@ -132,6 +131,49 @@ var renderCar = /** @class */ (function () {
                 }
             });
         }); };
+    };
+    // Filter for car(s) if at least 1 condition for searching is true
+    renderCar._carsFilter = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var cars, carsFilterDiv, notCarFoundDiv, carFilterForm, filterBtn, brandInput, priceInput, yearInput;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, carService.getAll()];
+                    case 1:
+                        cars = _a.sent();
+                        carsFilterDiv = document.getElementById('carsFilterDiv');
+                        notCarFoundDiv = document.getElementById('notCarFoundDiv');
+                        carFilterForm = document.forms.namedItem('carFilter');
+                        filterBtn = document.getElementById('filterBtn');
+                        brandInput = carFilterForm.choose_brand;
+                        priceInput = carFilterForm.choose_price;
+                        yearInput = carFilterForm.choose_year;
+                        filterBtn.onclick = function (e) {
+                            e.preventDefault();
+                            carsFilterDiv.innerText = '';
+                            notCarFoundDiv.innerText = '';
+                            //if at least 1 condition is true , seaching gives a positive result
+                            // @ts-ignore
+                            var carsFilter = cars.filter(function (car) {
+                                var id = car.id, brand = car.brand, price = car.price, year = car.year;
+                                if (car.brand.toLowerCase() === brandInput.value.toLowerCase() ||
+                                    car.price === +priceInput.value || car.year === +yearInput.value) {
+                                    var carItemDiv = document.createElement('div');
+                                    carItemDiv.innerText = "id: ".concat(id, ",   model:").concat(brand, ",   made at: ").concat(year, ",   price: ").concat(price);
+                                    carsFilterDiv.append(carItemDiv);
+                                    return car;
+                                }
+                            });
+                            // if nothing is found (array carsFilter is empty) the below message will be appeared
+                            if (!carsFilter.length) {
+                                notCarFoundDiv.innerText = "Nothing found or incorrect searching conditions !";
+                            }
+                            carFilterForm.reset();
+                        };
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     return renderCar;
 }());
